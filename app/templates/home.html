@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<p class="fecha-hoy">{{ fecha_hoy }}</p>
+<div class="portada">
+  <section>
+    <h1>Startups Chile</h1>
+    {% for articulo in chile %}{% include "_card.html" %}
+    {% else %}<p class="vacio">Aún no hay noticias en esta sección.</p>{% endfor %}
+  </section>
+  <section>
+    <h1>Startups Mundo</h1>
+    {% for articulo in mundo %}{% include "_card.html" %}
+    {% else %}<p class="vacio">Aún no hay noticias en esta sección.</p>{% endfor %}
+  </section>
+</div>
+{% endblock %}

@@ -60,6 +60,12 @@ def test_error_en_un_item_no_aborta_el_resto(monkeypatch, tmp_path):
     assert run.process_source(conn, client=None, source=FUENTE) == 0
 
 
+def test_descarta_url_con_esquema_no_http(monkeypatch, tmp_path):
+    conn = preparar(monkeypatch, tmp_path, [item("javascript:alert(1)")])
+    assert run.process_source(conn, client=None, source=FUENTE) == 0
+    assert db.list_articles(conn) == []
+
+
 def test_usa_extracto_si_no_hay_texto_completo(monkeypatch, tmp_path):
     conn = preparar(monkeypatch, tmp_path, [item("https://ejemplo.com/a")])
     monkeypatch.setattr(run.fetch, "fetch_article_text", lambda url: None)

@@ -1,6 +1,7 @@
 """Corrida diaria del scraper: python -m scraper.run"""
 import logging
 from datetime import datetime, timezone
+from urllib.parse import urlsplit
 
 import anthropic
 
@@ -13,6 +14,9 @@ log = logging.getLogger("scraper")
 
 def process_item(conn, client, source, item):
     """Procesa un candidato; True si quedó guardado como publicado."""
+    if urlsplit(item.url).scheme not in ("http", "https"):
+        log.warning("URL con esquema no permitido, se descarta: %s", item.url)
+        return False
     if db.article_exists(conn, item.url):
         return False
     seccion = classify.classify(item.titulo, item.extracto, client=client)

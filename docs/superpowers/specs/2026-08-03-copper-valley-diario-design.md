@@ -33,7 +33,7 @@ panel admin, newsletter.
 Monolito Python:
 
 ```
-copper-valley-diario/
+<raíz del repo>          # carpeta local: diario-startapero (solo nombre de directorio)
 ├── app/                  # Web (FastAPI + Jinja2)
 │   ├── main.py           # rutas: / (portada), /chile, /mundo
 │   ├── templates/        # base.html, portada, sección, tarjeta de noticia

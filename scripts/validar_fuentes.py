@@ -1,6 +1,6 @@
 """Prueba cada feed de sources.py contra la red e informa su estado.
 
-Uso: python -m scripts.validar_fuentes  (crear también scripts/__init__.py vacío)
+Uso: python -m scripts.validar_fuentes
 """
 from scraper.fetch import fetch_feed, filter_recent
 from scraper.sources import SOURCES

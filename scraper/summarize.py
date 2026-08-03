@@ -35,6 +35,8 @@ def summarize(titulo_original, texto, fuente, client=None):
         datos = json.loads(bruto)
     except json.JSONDecodeError:
         return None
+    if not isinstance(datos, dict):
+        return None
     if not datos.get("titulo") or not datos.get("resumen"):
         return None
     return {"titulo": datos["titulo"], "resumen": datos["resumen"]}

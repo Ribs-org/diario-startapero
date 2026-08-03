@@ -30,3 +30,12 @@ def test_trunca_texto_largo():
     summarize("Original", "x" * 20000, "Sifted", client=fake)
     contenido = fake.kwargs["messages"][0]["content"]
     assert len(contenido) < MAX_CHARS + 500  # texto truncado + encabezado corto
+
+
+def test_json_valido_pero_no_dict_retorna_none():
+    # Valid JSON but not a dict (e.g., a list) should return None
+    assert summarize("Original", "Texto.", "Sifted",
+                     client=FakeClient('["a", "b"]')) is None
+    # Also test with a string
+    assert summarize("Original", "Texto.", "Sifted",
+                     client=FakeClient('"algo salió mal"')) is None

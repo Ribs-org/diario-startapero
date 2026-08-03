@@ -4,9 +4,9 @@ SOURCES = [
     # Orientadas a Chile / LATAM
     {"nombre": "La Tercera - Pulso",
      "feed_url": "https://www.latercera.com/arc/outboundfeeds/rss/category/pulso/?outputType=xml"},
-    {"nombre": "El Mostrador - Mercados",
-     "feed_url": "https://www.elmostrador.cl/categoria/mercados/feed/"},
-    {"nombre": "Contxto", "feed_url": "https://contxto.com/feed/"},
+    {"nombre": "Fayerwayer",
+     "feed_url": "https://www.fayerwayer.com/feed/"},
+    {"nombre": "Contxto", "feed_url": "https://contxto.com/es/feed/"},
     {"nombre": "Startupeable", "feed_url": "https://startupeable.com/feed/"},
     {"nombre": "LatamList", "feed_url": "https://latamlist.com/feed/"},
     # Orientadas a Mundo

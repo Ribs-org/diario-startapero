@@ -35,7 +35,7 @@ nav a {
   letter-spacing: 0.08em;
 }
 
-nav a:hover { color: var(--cobre); }
+nav a:hover { color: var(--cobre-claro); }
 
 main { max-width: 1000px; margin: 0 auto; padding: 1rem; }
 
@@ -68,7 +68,10 @@ h1 {
   border-top: 3px solid var(--cobre);
   padding: 1rem 1.25rem;
   margin-bottom: 1.25rem;
+  transition: border-top-color 0.15s ease;
 }
+
+.tarjeta:hover { border-top-color: var(--cobre-claro); }
 
 .tarjeta h2 {
   color: var(--azul-marino);
@@ -93,6 +96,8 @@ h1 {
 .fuente { color: var(--gris-acero); font-size: 0.85rem; }
 
 .fuente a { color: var(--cobre); }
+
+.fuente a:hover { color: var(--cobre-claro); }
 
 .vacio { color: var(--gris-acero); font-style: italic; }
 

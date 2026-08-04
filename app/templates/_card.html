@@ -1,0 +1,10 @@
+<article class="tarjeta">
+  <span class="etiqueta etiqueta-{{ articulo['seccion'] }}">
+    {{ 'Startups Chile' if articulo['seccion'] == 'chile' else 'Startups Mundo' }}
+  </span>
+  <h2>{{ articulo['titulo'] }}</h2>
+  <p class="resumen">{{ articulo['resumen'] }}</p>
+  <p class="fuente">Fuente:
+    <a href="{{ articulo['url_original'] }}" target="_blank" rel="noopener">{{ articulo['fuente'] }}</a>
+    · {{ articulo['fecha_publicacion'] }}</p>
+</article>

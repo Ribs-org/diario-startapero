@@ -1,0 +1,6 @@
+Azul marino profundo: #0F1D2D (color principal, transmite prestigio y confianza)
+Azul pizarra: #334155 (apoyo para títulos e iconografía)
+Gris acero: #8A9199 (elementos secundarios)
+Marfil: #F4F1ED (fondo elegante)
+Cobre: #B87333 (color de acento, referencia al cobre chileno)
+Cobre claro: #D4A373 (detalles y resaltados)

@@ -1,0 +1,111 @@
+:root {
+  --marfil: #F4F1ED;
+  --azul-marino: #0F1D2D;
+  --azul-pizarra: #334155;
+  --gris-acero: #8A9199;
+  --cobre: #B87333;
+  --cobre-claro: #D4A373;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--marfil);
+  color: var(--azul-pizarra);
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.6;
+}
+
+.cabecera {
+  text-align: center;
+  padding: 1.5rem 1rem 0.5rem;
+  border-bottom: 3px double var(--azul-marino);
+}
+
+.logo { max-height: 110px; }
+
+nav { margin: 0.75rem 0; }
+
+nav a {
+  color: var(--azul-marino);
+  text-decoration: none;
+  margin: 0 1rem;
+  font-variant: small-caps;
+  letter-spacing: 0.08em;
+}
+
+nav a:hover { color: var(--cobre-claro); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 1rem; }
+
+.fecha-hoy {
+  text-align: center;
+  color: var(--gris-acero);
+  font-style: italic;
+  margin-top: 0;
+}
+
+.portada {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 760px) {
+  .portada { grid-template-columns: 1fr; }
+}
+
+h1 {
+  color: var(--azul-marino);
+  border-bottom: 2px solid var(--cobre);
+  padding-bottom: 0.3rem;
+}
+
+.tarjeta {
+  background: #fff;
+  border: 1px solid #e3ded7;
+  border-top: 3px solid var(--cobre);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  transition: border-top-color 0.15s ease;
+}
+
+.tarjeta:hover { border-top-color: var(--cobre-claro); }
+
+.tarjeta h2 {
+  color: var(--azul-marino);
+  margin: 0.4rem 0;
+  font-size: 1.25rem;
+}
+
+.etiqueta {
+  font-size: 0.7rem;
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: var(--azul-pizarra);
+  padding: 0.15rem 0.5rem;
+}
+
+.etiqueta-chile { background: var(--cobre); }
+
+.resumen { white-space: pre-line; }
+
+.fuente { color: var(--gris-acero); font-size: 0.85rem; }
+
+.fuente a { color: var(--cobre); }
+
+.fuente a:hover { color: var(--cobre-claro); }
+
+.vacio { color: var(--gris-acero); font-style: italic; }
+
+footer {
+  text-align: center;
+  color: var(--gris-acero);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--gris-acero);
+  margin-top: 2rem;
+  padding: 1rem;
+}

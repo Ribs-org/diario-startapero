@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Feed de prueba</title>
+    <item>
+      <title>Startup A levanta US$5M</title>
+      <link>https://ejemplo.com/a</link>
+      <description>La startup A &lt;b&gt;anunció&lt;/b&gt; una ronda semilla.</description>
+      <pubDate>Mon, 03 Aug 2026 12:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Noticia vieja</title>
+      <link>https://ejemplo.com/b</link>
+      <description>Una noticia antigua.</description>
+      <pubDate>Mon, 20 Jul 2026 12:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Sin fecha</title>
+      <link>https://ejemplo.com/c</link>
+      <description>Entrada sin pubDate.</description>
+    </item>
+  </channel>
+</rss>

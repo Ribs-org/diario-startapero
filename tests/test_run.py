@@ -19,7 +19,7 @@ def preparar(monkeypatch, tmp_path, items, seccion="chile"):
     monkeypatch.setattr(run.fetch, "filter_recent", lambda items, **kw: items)
     monkeypatch.setattr(run.fetch, "fetch_article_text", lambda url: "Texto completo.")
     monkeypatch.setattr(run.classify, "classify",
-                        lambda t, e, client=None: seccion)
+                        lambda t, e, fuente=None, foco=None, client=None: seccion)
     monkeypatch.setattr(run.summarize, "summarize",
                         lambda t, x, f, client=None: {"titulo": "Nuestro titular",
                                                       "resumen": "Nuestro resumen."})
@@ -64,6 +64,50 @@ def test_descarta_url_con_esquema_no_http(monkeypatch, tmp_path):
     conn = preparar(monkeypatch, tmp_path, [item("javascript:alert(1)")])
     assert run.process_source(conn, client=None, source=FUENTE) == 0
     assert db.list_articles(conn) == []
+
+
+def test_respeta_la_ventana_de_dias_declarada_por_la_fuente(monkeypatch, tmp_path):
+    conn = preparar(monkeypatch, tmp_path, [item("https://ejemplo.com/a")])
+    capturado = {}
+
+    def capturar(items, **kw):
+        capturado.update(kw)
+        return items
+
+    monkeypatch.setattr(run.fetch, "filter_recent", capturar)
+    run.process_source(conn, client=None,
+                       source={**FUENTE, "foco": "chile", "dias": 30})
+    assert capturado["days"] == 30
+
+
+def test_ventana_por_defecto_de_dos_dias(monkeypatch, tmp_path):
+    conn = preparar(monkeypatch, tmp_path, [item("https://ejemplo.com/a")])
+    capturado = {}
+
+    def capturar(items, **kw):
+        capturado.update(kw)
+        return items
+
+    monkeypatch.setattr(run.fetch, "filter_recent", capturar)
+    run.process_source(conn, client=None, source=FUENTE)
+    assert capturado["days"] == 2
+
+
+def test_pasa_la_procedencia_de_la_fuente_al_clasificador(monkeypatch, tmp_path):
+    """El clasificador necesita saber que la fuente cubre Chile: los titulares
+    de startups chilenas ('Fracttal raises $35M') no dicen 'Chile'."""
+    conn = preparar(monkeypatch, tmp_path, [item("https://ejemplo.com/a")])
+    capturado = {}
+
+    def capturar(t, e, fuente=None, foco=None, client=None):
+        capturado.update(fuente=fuente, foco=foco)
+        return "chile"
+
+    monkeypatch.setattr(run.classify, "classify", capturar)
+    fuente_chile = {"nombre": "LatamList - Chile",
+                    "feed_url": "https://ejemplo.com/feed", "foco": "chile"}
+    run.process_source(conn, client=None, source=fuente_chile)
+    assert capturado == {"fuente": "LatamList - Chile", "foco": "chile"}
 
 
 def test_usa_extracto_si_no_hay_texto_completo(monkeypatch, tmp_path):

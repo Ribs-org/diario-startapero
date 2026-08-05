@@ -19,7 +19,9 @@ def process_item(conn, client, source, item):
         return False
     if db.article_exists(conn, item.url):
         return False
-    seccion = classify.classify(item.titulo, item.extracto, client=client)
+    seccion = classify.classify(item.titulo, item.extracto,
+                                fuente=source["nombre"], foco=source.get("foco"),
+                                client=client)
     if seccion is None:
         return False
     texto = None
@@ -48,7 +50,8 @@ def process_item(conn, client, source, item):
 
 
 def process_source(conn, client, source):
-    items = fetch.filter_recent(fetch.fetch_feed(source["feed_url"]))
+    items = fetch.filter_recent(fetch.fetch_feed(source["feed_url"]),
+                                days=source.get("dias", 2))
     guardados = 0
     for item in items:
         try:

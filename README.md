@@ -5,41 +5,25 @@ Diario web de noticias de startups y emprendimiento, con dos secciones:
 filtra y clasifica cada noticia con Claude y publica un titular y resumen
 propios que citan y enlazan la fuente original.
 
-## Cómo correr
+## Producción
+
+- **Sitio:** https://diario-startapero.vercel.app (Vercel, lee Turso)
+- **Scraper:** GitHub Actions, diario a las 11:00 UTC (`.github/workflows/scraper.yml`);
+  corrida manual: pestaña Actions → "Scraper diario" → Run workflow.
+- **Base de datos:** Turso (`copper-valley-news`). Credenciales: secrets del
+  repo (Actions) y environment variables (Vercel).
+- **Despublicar una nota:** en https://app.turso.tech → la BD → SQL console:
+  `UPDATE articles SET estado = 'hidden' WHERE url_original = '...';`
+
+## Desarrollo local
 
 ```powershell
-# 1. Instalar
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
-
-# 2. Scraper (requiere ANTHROPIC_API_KEY en el entorno)
-.venv\Scripts\python.exe -m scraper.run
-
-# 3. Web
-.venv\Scripts\uvicorn.exe app.main:app --port 8000
+.venv\Scripts\python.exe -m pytest -q          # tests (siempre SQLite local)
+.venv\Scripts\uvicorn.exe app.main:app --port 8000   # sitio local con diario.db local
+.venv\Scripts\python.exe -m scraper.run        # corrida local (BD local, salvo TURSO_* en el entorno)
 ```
 
-## Agendar la corrida diaria
-
-La corrida diaria todavía no está agendada. Para agendarla a las 7:00 AM con
-el Programador de tareas de Windows, guardar la API key como variable de
-usuario persistente y crear la tarea:
-
-```powershell
-[Environment]::SetEnvironmentVariable("ANTHROPIC_API_KEY", $env:ANTHROPIC_API_KEY, "User")
-schtasks /Create /SC DAILY /ST 07:00 /TN "CopperValleyDiario" /TR "cmd /c cd /d C:\Users\vpareja\Desktop\Ribs\diario-startapero && .venv\Scripts\python.exe -m scraper.run"
-```
-
-Verificar con `schtasks /Query /TN "CopperValleyDiario"`.
-
-## Tests
-
-```powershell
-.venv\Scripts\python.exe -m pytest -q
-```
-
-## Operación
-
-- Despublicar una nota: `UPDATE articles SET estado = 'hidden' WHERE url_original = '...'`
 - Validar fuentes RSS: `.venv\Scripts\python.exe -m scripts.validar_fuentes`
-- Base de datos: `diario.db` (SQLite) en la raíz del repo.
+- BD local de desarrollo: `diario.db` (SQLite) en la raíz del repo.

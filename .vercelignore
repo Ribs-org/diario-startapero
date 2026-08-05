@@ -1,0 +1,8 @@
+.venv/
+diario.db
+docs/
+assets/
+tests/
+scripts/
+.github/
+.claude/

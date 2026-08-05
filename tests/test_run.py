@@ -1,8 +1,18 @@
 from datetime import datetime, timezone
 
+import anthropic
+import httpx
+import pytest
+
 import db
 from scraper import run
 from scraper.fetch import FeedItem
+
+
+def error_de_credenciales(cls=anthropic.AuthenticationError, status=401):
+    respuesta = httpx.Response(
+        status, request=httpx.Request("POST", "https://api.anthropic.com/v1/messages"))
+    return cls("API key is invalid.", response=respuesta, body=None)
 
 
 FUENTE = {"nombre": "Fuente Test", "feed_url": "https://ejemplo.com/feed"}
@@ -58,6 +68,57 @@ def test_error_en_un_item_no_aborta_el_resto(monkeypatch, tmp_path):
     monkeypatch.setattr(run.summarize, "summarize", resumen_con_falla)
     # todos los ítems fallan al resumir, pero la corrida no lanza excepción
     assert run.process_source(conn, client=None, source=FUENTE) == 0
+
+
+def test_una_credencial_invalida_aborta_en_vez_de_tragarse_el_error(monkeypatch, tmp_path):
+    """Una API key invalida no es un fallo por item: reintentarla 146 veces y
+    terminar en verde deja el diario vacio sin que nadie se entere."""
+    conn = preparar(monkeypatch, tmp_path, [item("https://ejemplo.com/a")])
+
+    def clasificar_sin_credencial(*a, **kw):
+        raise error_de_credenciales()
+
+    monkeypatch.setattr(run.classify, "classify", clasificar_sin_credencial)
+    with pytest.raises(anthropic.AuthenticationError):
+        run.process_source(conn, client=None, source=FUENTE)
+
+
+def test_tambien_aborta_si_la_cuenta_no_tiene_saldo(monkeypatch, tmp_path):
+    conn = preparar(monkeypatch, tmp_path, [item("https://ejemplo.com/a")])
+
+    def sin_saldo(*a, **kw):
+        raise error_de_credenciales(anthropic.PermissionDeniedError, 403)
+
+    monkeypatch.setattr(run.classify, "classify", sin_saldo)
+    with pytest.raises(anthropic.PermissionDeniedError):
+        run.process_source(conn, client=None, source=FUENTE)
+
+
+def test_main_termina_en_rojo_si_la_credencial_es_invalida(monkeypatch, tmp_path):
+    """El job de Actions debe quedar rojo, no verde con 0 noticias."""
+    preparar(monkeypatch, tmp_path, [item("https://ejemplo.com/a")])
+    monkeypatch.setattr(db, "get_connection", lambda *a, **kw: None)
+    monkeypatch.setattr(run.db, "get_connection", lambda *a, **kw: None)
+    monkeypatch.setattr(run.anthropic, "Anthropic", lambda *a, **kw: None)
+
+    def caido(*a, **kw):
+        raise error_de_credenciales()
+
+    monkeypatch.setattr(run, "process_source", caido)
+    with pytest.raises(SystemExit) as salida:
+        run.main()
+    assert salida.value.code == 1
+
+
+def test_una_fuente_caida_no_tumba_la_corrida(monkeypatch, tmp_path):
+    """Un feed con problemas de red sigue siendo tolerable: solo las
+    credenciales abortan."""
+    preparar(monkeypatch, tmp_path, [item("https://ejemplo.com/a")])
+    monkeypatch.setattr(run.db, "get_connection", lambda *a, **kw: None)
+    monkeypatch.setattr(run.anthropic, "Anthropic", lambda *a, **kw: None)
+    monkeypatch.setattr(run, "process_source",
+                        lambda *a, **kw: (_ for _ in ()).throw(RuntimeError("feed caido")))
+    run.main()  # no lanza
 
 
 def test_descarta_url_con_esquema_no_http(monkeypatch, tmp_path):

@@ -11,6 +11,10 @@ from scraper.sources import SOURCES
 
 log = logging.getLogger("scraper")
 
+# Problemas de credenciales o de saldo: no son fallos de un ítem concreto, así
+# que reintentarlos ítem por ítem solo produce una corrida verde con 0 noticias.
+FATALES = (anthropic.AuthenticationError, anthropic.PermissionDeniedError)
+
 
 def process_item(conn, client, source, item):
     """Procesa un candidato; True si quedó guardado como publicado."""
@@ -57,6 +61,8 @@ def process_source(conn, client, source):
         try:
             if process_item(conn, client, source, item):
                 guardados += 1
+        except FATALES:
+            raise
         except Exception:
             log.exception("Error procesando %s", item.url)
     return guardados
@@ -73,6 +79,10 @@ def main():
             n = process_source(conn, client, source)
             log.info("%s: %d noticias nuevas", source["nombre"], n)
             total += n
+        except FATALES as e:
+            log.error("Credenciales de la API rechazadas (%s): se aborta la "
+                      "corrida. Revisa el secret ANTHROPIC_API_KEY.", e)
+            raise SystemExit(1)
         except Exception:
             log.exception("Fuente caída, se continúa: %s", source["nombre"])
     log.info("Corrida completa: %d noticias nuevas en total", total)

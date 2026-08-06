@@ -101,6 +101,98 @@ h1 {
 
 .vacio { color: var(--gris-acero); font-style: italic; }
 
+/* --- Financiamiento --- */
+
+.bajada { max-width: 46rem; }
+
+h2.grupo {
+  color: var(--azul-marino);
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  font-size: 1.15rem;
+  margin: 2rem 0 0.75rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid var(--gris-acero);
+}
+
+.fondos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 900px) { .fondos { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .fondos { grid-template-columns: 1fr; } }
+
+.fondo {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e3ded7;
+  border-top: 3px solid var(--cobre);
+  padding: 1rem 1.1rem 1.1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-top-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fondo:hover {
+  border-top-color: var(--cobre-claro);
+  box-shadow: 0 2px 10px rgba(15, 29, 45, 0.09);
+}
+
+.fondo-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 56px;
+  margin-bottom: 0.7rem;
+}
+
+.fondo-logo img {
+  max-height: 56px;
+  max-width: 170px;
+  object-fit: contain;
+}
+
+.monograma {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  height: 56px;
+  padding: 0 0.5rem;
+  background: var(--azul-marino);
+  color: var(--marfil);
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
+.fondo-nombre {
+  color: var(--azul-marino);
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.fondo-meta {
+  font-family: Arial, sans-serif;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--cobre);
+  margin: 0.15rem 0 0.5rem;
+}
+
+.fondo-descripcion { font-size: 0.9rem; line-height: 1.5; }
+
+.nota {
+  color: var(--gris-acero);
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-top: 2rem;
+}
+
 footer {
   text-align: center;
   color: var(--gris-acero);

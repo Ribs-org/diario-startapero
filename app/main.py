@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import db
+from app.financiamiento import por_categoria
 
 BASE = Path(__file__).parent
 app = FastAPI(title="Copper Valley Diario")
@@ -52,4 +53,13 @@ def seccion_mundo(request: Request, conn=Depends(get_db)):
     return templates.TemplateResponse(request, "section.html", {
         "titulo_seccion": "Startups Mundo",
         "articulos": db.list_articles(conn, "mundo", limit=30),
+    })
+
+
+@app.get("/financiamiento")
+def seccion_financiamiento(request: Request):
+    """Directorio estatico: no toca la base de datos."""
+    return templates.TemplateResponse(request, "financiamiento.html", {
+        "chile": por_categoria("chile"),
+        "internacional": por_categoria("internacional"),
     })

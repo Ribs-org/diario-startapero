@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Financiamiento — Copper Valley Diario{% endblock %}
+{% block content %}
+<h1>Opciones de Financiamiento</h1>
+<p class="bajada">Fondos, aceleradoras y programas públicos a los que puede
+postular una startup. Cada logo lleva directo al portal de postulación cuando
+la institución tiene uno abierto.</p>
+
+<h2 class="grupo">Chile</h2>
+<div class="fondos">
+  {% for inst in chile %}{% include "_fondo.html" %}{% endfor %}
+</div>
+
+<h2 class="grupo">Internacional</h2>
+<div class="fondos">
+  {% for inst in internacional %}{% include "_fondo.html" %}{% endfor %}
+</div>
+
+<p class="nota">Directorio informativo elaborado por Copper Valley. Los montos,
+plazos y condiciones los define cada institución en su propio sitio.</p>
+{% endblock %}

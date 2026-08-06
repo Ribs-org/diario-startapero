@@ -1,0 +1,12 @@
+<a class="fondo" href="{{ inst['url'] }}" target="_blank" rel="noopener">
+  <span class="fondo-logo">
+    {% if inst['logo'] %}
+    <img src="{{ inst['logo'] }}" alt="Logo de {{ inst['nombre'] }}" loading="lazy">
+    {% else %}
+    <span class="monograma">{{ inst['monograma'] }}</span>
+    {% endif %}
+  </span>
+  <span class="fondo-nombre">{{ inst['nombre'] }}</span>
+  <span class="fondo-meta">{{ inst['tipo'] }} · {{ inst['etapa'] }}</span>
+  <span class="fondo-descripcion">{{ inst['descripcion'] }}</span>
+</a>

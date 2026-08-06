@@ -44,6 +44,22 @@ def test_seccion_mundo_solo_muestra_mundo(tmp_path, monkeypatch):
     assert "Titular chileno" not in r.text
 
 
+def test_financiamiento_lista_las_instituciones(tmp_path, monkeypatch):
+    client = cliente_con_datos(tmp_path, monkeypatch)
+    r = client.get("/financiamiento")
+    assert r.status_code == 200
+    assert "Platanus Ventures" in r.text
+    assert "Y Combinator" in r.text
+    assert 'href="https://platan.us/apply"' in r.text
+    assert '<img src="/static/logos/platanus.ico"' in r.text
+
+
+def test_financiamiento_esta_en_el_menu(tmp_path, monkeypatch):
+    client = cliente_con_datos(tmp_path, monkeypatch)
+    r = client.get("/")
+    assert 'href="/financiamiento"' in r.text
+
+
 def test_tarjeta_enlaza_a_la_fuente(tmp_path, monkeypatch):
     client = cliente_con_datos(tmp_path, monkeypatch)
     r = client.get("/chile")

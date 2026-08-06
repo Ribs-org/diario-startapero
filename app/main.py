@@ -1,4 +1,5 @@
 """Web de Copper Valley Diario: solo lee de SQLite."""
+import mimetypes
 from datetime import date
 from pathlib import Path
 
@@ -10,6 +11,12 @@ import db
 from app.financiamiento import por_categoria
 
 BASE = Path(__file__).parent
+
+# El runtime de Vercel no trae el mapeo de .webp y sirve esos logos como
+# application/octet-stream; hoy el navegador los adivina, pero se romperian
+# el dia que la respuesta lleve X-Content-Type-Options: nosniff.
+mimetypes.add_type("image/webp", ".webp")
+
 app = FastAPI(title="Copper Valley Diario")
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 templates = Jinja2Templates(directory=BASE / "templates")

@@ -54,6 +54,16 @@ def test_financiamiento_lista_las_instituciones(tmp_path, monkeypatch):
     assert '<img src="/static/logos/platanus.ico"' in r.text
 
 
+def test_los_logos_se_sirven_con_su_tipo_de_imagen(tmp_path, monkeypatch):
+    client = cliente_con_datos(tmp_path, monkeypatch)
+    for archivo, tipo in [("impacta-vc.webp", "image/webp"),
+                          ("corfo.png", "image/png"),
+                          ("kaszek.svg", "image/svg+xml")]:
+        r = client.get(f"/static/logos/{archivo}")
+        assert r.status_code == 200, archivo
+        assert r.headers["content-type"].startswith(tipo), archivo
+
+
 def test_financiamiento_esta_en_el_menu(tmp_path, monkeypatch):
     client = cliente_con_datos(tmp_path, monkeypatch)
     r = client.get("/")

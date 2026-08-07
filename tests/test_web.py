@@ -64,10 +64,29 @@ def test_los_logos_se_sirven_con_su_tipo_de_imagen(tmp_path, monkeypatch):
         assert r.headers["content-type"].startswith(tipo), archivo
 
 
-def test_financiamiento_esta_en_el_menu(tmp_path, monkeypatch):
+def test_comunidades_lista_las_comunidades(tmp_path, monkeypatch):
+    client = cliente_con_datos(tmp_path, monkeypatch)
+    r = client.get("/comunidades")
+    assert r.status_code == 200
+    assert "Jump Chile" in r.text
+    assert "Asech" in r.text
+    assert 'href="https://openbeauchef.cl/"' in r.text
+    assert '<img src="/static/logos/jump-chile.png"' in r.text
+
+
+def test_los_directorios_estan_en_el_menu(tmp_path, monkeypatch):
     client = cliente_con_datos(tmp_path, monkeypatch)
     r = client.get("/")
     assert 'href="/financiamiento"' in r.text
+    assert 'href="/comunidades"' in r.text
+
+
+def test_el_diario_lleva_la_firma_del_autor(tmp_path, monkeypatch):
+    client = cliente_con_datos(tmp_path, monkeypatch)
+    for ruta in ["/", "/chile", "/financiamiento", "/comunidades"]:
+        r = client.get(ruta)
+        assert 'href="https://linktr.ee/vicente.pareja"' in r.text, ruta
+        assert "Vicente Pareja" in r.text, ruta
 
 
 def test_tarjeta_enlaza_a_la_fuente(tmp_path, monkeypatch):

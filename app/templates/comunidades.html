@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Comunidades — Copper Valley Diario{% endblock %}
+{% block content %}
+<h1>Comunidades del Copper Valley</h1>
+<p class="bajada">Dónde se juntan los que emprenden en Chile: comunidades
+universitarias, gremios y redes abiertas. Cada logo lleva al sitio de la
+comunidad.</p>
+
+<h2 class="grupo">Universitarias</h2>
+<div class="fichas">
+  {% for ficha in universitarias %}{% include "_ficha.html" %}{% endfor %}
+</div>
+
+<h2 class="grupo">Redes y gremios</h2>
+<div class="fichas">
+  {% for ficha in redes %}{% include "_ficha.html" %}{% endfor %}
+</div>
+
+<p class="nota">¿Falta tu comunidad? Escríbenos y la sumamos al directorio.</p>
+{% endblock %}

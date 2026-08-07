@@ -1,0 +1,12 @@
+<a class="ficha" href="{{ ficha['url'] }}" target="_blank" rel="noopener">
+  <span class="ficha-logo">
+    {% if ficha['logo'] %}
+    <img src="{{ ficha['logo'] }}" alt="Logo de {{ ficha['nombre'] }}" loading="lazy">
+    {% else %}
+    <span class="monograma">{{ ficha['monograma'] }}</span>
+    {% endif %}
+  </span>
+  <span class="ficha-nombre">{{ ficha['nombre'] }}</span>
+  <span class="ficha-meta">{{ ficha['tipo'] }} · {{ ficha['detalle'] }}</span>
+  <span class="ficha-descripcion">{{ ficha['descripcion'] }}</span>
+</a>

@@ -1,14 +1,15 @@
 # Copper Valley Diario
 
 Diario web de noticias de startups y emprendimiento, con dos secciones de
-noticias — **Startups Chile** y **Startups Mundo** — y un directorio de
-**Financiamiento**. Un scraper diario lee fuentes RSS, filtra y clasifica cada
-noticia con Claude y publica un titular y resumen propios que citan y enlazan
-la fuente original.
+noticias — **Startups Chile** y **Startups Mundo** — y dos directorios:
+**Financiamiento** y **Comunidades**. Un scraper diario lee fuentes RSS, filtra
+y clasifica cada noticia con Claude y publica un titular y resumen propios que
+citan y enlazan la fuente original.
 
-La sección Financiamiento es estática: no pasa por el scraper ni por la base de
-datos. El listado de fondos, aceleradoras y programas vive en
-`app/financiamiento.py` y sus logos en `app/static/logos/`.
+Los dos directorios son estáticos: no pasan por el scraper ni por la base de
+datos. Los listados viven en `app/financiamiento.py` y `app/comunidades.py`,
+sus logos en `app/static/logos/` y la ficha que comparten en
+`app/templates/_ficha.html`.
 
 ## Producción
 
@@ -31,9 +32,10 @@ python -m venv .venv
 ```
 
 - Validar fuentes RSS: `.venv\Scripts\python.exe -m scripts.validar_fuentes`
-- Agregar una institución de financiamiento: sumarla a `app/financiamiento.py`
-  y correr `.venv\Scripts\python.exe -m scripts.descargar_logos` para bajar su
-  logo al repo.
-- Revisar que los enlaces de financiamiento sigan vivos:
-  `.venv\Scripts\python.exe -m scripts.validar_financiamiento`
+- Agregar una ficha a Financiamiento o Comunidades: sumarla a
+  `app/financiamiento.py` o `app/comunidades.py` y correr
+  `.venv\Scripts\python.exe -m scripts.descargar_logos` para bajar su logo al
+  repo. Si el sitio no publica un logo usable, la ficha muestra el monograma.
+- Revisar que los enlaces de ambos directorios sigan vivos:
+  `.venv\Scripts\python.exe -m scripts.validar_directorios`
 - BD local de desarrollo: `diario.db` (SQLite) en la raíz del repo.

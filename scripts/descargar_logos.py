@@ -1,30 +1,48 @@
-"""Descarga a app/static/logos/ el logo de cada institución de financiamiento.
+"""Descarga a app/static/logos/ el logo de cada ficha de los directorios.
 
-Prueba, en orden: el `logo_url` fijado a mano en la institución, los íconos
+Cubre las dos secciones estáticas del diario: Financiamiento y Comunidades.
+
+Prueba, en orden: el `logo_url` fijado a mano en la ficha, los íconos
 declarados en el HTML del sitio (apple-touch-icon y los de mayor tamaño),
 /favicon.ico y por último los servicios de favicons de Google y DuckDuckGo.
 Los archivos quedan versionados en el repo: el sitio nunca le pide imágenes a
 un tercero en tiempo de carga.
 
 Cada logo se guarda como `<slug>.<extensión>`; la web resuelve la extensión
-sola (ver `app.financiamiento.ruta_logo`). Las instituciones marcadas con
+sola (ver `app.directorio.ruta_logo`). Las fichas marcadas con
 `logo_manual` se saltan, porque su logotipo está puesto a mano en el repo. Si
 no se consigue ninguna imagen, la tarjeta muestra el monograma y el sitio
 igual funciona.
 
 Uso: python -m scripts.descargar_logos
 """
+import hashlib
 import re
+import struct
 from urllib.parse import urljoin
 
 import httpx
 
-from app.financiamiento import DIR_LOGOS, INSTITUCIONES
+from app.comunidades import COMUNIDADES
+from app.directorio import DIR_LOGOS
+from app.financiamiento import INSTITUCIONES
+
+FICHAS = INSTITUCIONES + COMUNIDADES
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 MINIMO_BYTES = 400        # descarta favicons placeholder de 1x1
 MINIMO_BYTES_SVG = 150    # un SVG legítimo pesa mucho menos que un PNG
+MINIMO_LADO = 64          # abajo de esto el logo se ve borroso en la ficha
+
+# Muchos sitios en WordPress no configuran favicon y sirven el de la propia
+# plataforma. Es una imagen válida, pero no es el logo de nadie. Van los dos
+# que aparecen en la practica: el original del sitio y el que devuelven los
+# servicios de favicons despues de reescalarlo.
+FAVICONS_GENERICOS = {
+    "000bf649cc8f6bf27cfb04d1bcdcd3c7",
+    "6ff1009e1215a17f2ac9420bed6a164d",
+}
 EXTENSIONES = {
     "image/png": ".png", "image/x-icon": ".ico", "image/vnd.microsoft.icon": ".ico",
     "image/jpeg": ".jpg", "image/webp": ".webp", "image/svg+xml": ".svg",
@@ -73,7 +91,24 @@ def candidatos(cliente, inst):
     return urls
 
 
-def descargar(cliente, url):
+def lado_menor(contenido):
+    """Lado más corto de la imagen, o None si el formato no se puede medir.
+
+    Solo mide PNG e ICO, que son la mayoría; SVG y WebP pasan derecho porque
+    el SVG escala solo y el WebP siempre vino de un logo grande.
+    """
+    if contenido[:8] == b"\x89PNG\r\n\x1a\n":
+        ancho, alto = struct.unpack(">II", contenido[16:24])
+        return min(ancho, alto)
+    if contenido[:4] == b"\x00\x00\x01\x00":  # ICO: 0 en la cabecera son 256px
+        cuantos = struct.unpack("<H", contenido[4:6])[0]
+        lados = [min(contenido[6 + i * 16] or 256, contenido[7 + i * 16] or 256)
+                 for i in range(cuantos)]
+        return max(lados) if lados else None
+    return None
+
+
+def descargar(cliente, url, exigir_tamano=True):
     """Devuelve (bytes, extensión) si la respuesta es una imagen útil."""
     r = cliente.get(url)
     tipo = r.headers.get("content-type", "").split(";")[0].strip()
@@ -82,6 +117,11 @@ def descargar(cliente, url):
     minimo = MINIMO_BYTES_SVG if tipo == "image/svg+xml" else MINIMO_BYTES
     if len(r.content) < minimo:
         return None
+    if hashlib.md5(r.content).hexdigest() in FAVICONS_GENERICOS:
+        return None
+    lado = lado_menor(r.content)
+    if exigir_tamano and lado is not None and lado < MINIMO_LADO:
+        return None
     return r.content, EXTENSIONES[tipo]
 
 
@@ -89,22 +129,31 @@ def main():
     DIR_LOGOS.mkdir(parents=True, exist_ok=True)
     with httpx.Client(follow_redirects=True, timeout=25,
                       headers={"User-Agent": UA}, verify=False) as cliente:
-        for inst in INSTITUCIONES:
+        for inst in FICHAS:
             if inst.get("logo_manual"):
                 print(f"SALTO {inst['slug']}: logo puesto a mano en el repo")
                 continue
-            for url in candidatos(cliente, inst):
-                try:
-                    resultado = descargar(cliente, url)
-                except Exception:
-                    resultado = None
-                if resultado:
-                    contenido, extension = resultado
+            urls = candidatos(cliente, inst)
+            # Primera vuelta exigiendo resolución decente; si ningún candidato
+            # la cumple, segunda vuelta aceptando lo que haya antes de
+            # resignarse al monograma.
+            for exigir in (True, False):
+                elegido = None
+                for url in urls:
+                    try:
+                        elegido = descargar(cliente, url, exigir_tamano=exigir)
+                    except Exception:
+                        elegido = None
+                    if elegido:
+                        break
+                if elegido:
+                    contenido, extension = elegido
                     for viejo in DIR_LOGOS.glob(f"{inst['slug']}.*"):
                         viejo.unlink()
                     (DIR_LOGOS / f"{inst['slug']}{extension}").write_bytes(contenido)
+                    aviso = "" if exigir else " (chico, no habia mejor)"
                     print(f"OK    {inst['slug']}{extension}: "
-                          f"{len(contenido)} bytes ({url})")
+                          f"{len(contenido)} bytes{aviso} ({url})")
                     break
             else:
                 print(f"FALLO {inst['slug']}: sin logo, usará el monograma")

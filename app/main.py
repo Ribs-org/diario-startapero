@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import db
-from app.financiamiento import por_categoria
+from app import comunidades, financiamiento
 
 BASE = Path(__file__).parent
 
@@ -65,8 +65,17 @@ def seccion_mundo(request: Request, conn=Depends(get_db)):
 
 @app.get("/financiamiento")
 def seccion_financiamiento(request: Request):
-    """Directorio estatico: no toca la base de datos."""
+    """Directorio estático: no toca la base de datos."""
     return templates.TemplateResponse(request, "financiamiento.html", {
-        "chile": por_categoria("chile"),
-        "internacional": por_categoria("internacional"),
+        "chile": financiamiento.por_categoria("chile"),
+        "internacional": financiamiento.por_categoria("internacional"),
+    })
+
+
+@app.get("/comunidades")
+def seccion_comunidades(request: Request):
+    """Directorio estático: no toca la base de datos."""
+    return templates.TemplateResponse(request, "comunidades.html", {
+        "universitarias": comunidades.por_categoria("universitaria"),
+        "redes": comunidades.por_categoria("red"),
     })

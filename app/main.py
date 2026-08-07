@@ -4,6 +4,7 @@ from datetime import date
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, Request
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -36,6 +37,12 @@ def get_db():
         yield conn
     finally:
         conn.close()
+
+
+@app.get("/favicon.ico")
+def favicon():
+    """Las páginas declaran el favicon, pero varios bots lo piden en la raíz."""
+    return FileResponse(BASE / "static" / "favicon.png", media_type="image/png")
 
 
 @app.get("/")

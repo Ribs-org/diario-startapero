@@ -38,4 +38,6 @@ python -m venv .venv
   repo. Si el sitio no publica un logo usable, la ficha muestra el monograma.
 - Revisar que los enlaces de ambos directorios sigan vivos:
   `.venv\Scripts\python.exe -m scripts.validar_directorios`
+- `app/static/favicon.png` es el emblema del logo recortado en cuadrado
+  (region 163,38 275x220 de `logo.png`, centrada sobre el fondo marfil).
 - BD local de desarrollo: `diario.db` (SQLite) en la raíz del repo.

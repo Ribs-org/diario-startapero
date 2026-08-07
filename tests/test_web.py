@@ -81,6 +81,19 @@ def test_los_directorios_estan_en_el_menu(tmp_path, monkeypatch):
     assert 'href="/comunidades"' in r.text
 
 
+def test_el_favicon_es_el_logo_del_diario(tmp_path, monkeypatch):
+    client = cliente_con_datos(tmp_path, monkeypatch)
+    r = client.get("/")
+    assert '<link rel="icon" type="image/png" href="/static/favicon.png">' in r.text
+    imagen = client.get("/static/favicon.png")
+    assert imagen.status_code == 200
+    assert imagen.headers["content-type"].startswith("image/png")
+    # los bots que lo piden en la raíz tampoco se quedan sin icono
+    raiz = client.get("/favicon.ico")
+    assert raiz.status_code == 200
+    assert raiz.headers["content-type"].startswith("image/png")
+
+
 def test_el_diario_lleva_la_firma_del_autor(tmp_path, monkeypatch):
     client = cliente_con_datos(tmp_path, monkeypatch)
     for ruta in ["/", "/chile", "/financiamiento", "/comunidades"]:

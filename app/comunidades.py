@@ -151,18 +151,6 @@ COMUNIDADES = [
         "monograma": "SL",
     },
     {
-        "slug": "startup-grind-santiago",
-        "nombre": "Startup Grind Santiago",
-        "dominio": "startupgrind.com",
-        "url": "https://www.startupgrind.com/santiago/",
-        "categoria": "red",
-        "tipo": "Comunidad de eventos",
-        "detalle": "Santiago",
-        "descripcion": "El capítulo santiaguino de la red global: charlas y "
-                       "encuentros periódicos entre fundadores.",
-        "monograma": "SG",
-    },
-    {
         "slug": "mujeres-empresarias",
         "nombre": "Mujeres Empresarias",
         "dominio": "me.cl",
@@ -173,6 +161,69 @@ COMUNIDADES = [
         "descripcion": "La red más grande de mujeres que emprenden y lideran "
                        "empresas en Chile, con programas y encuentros propios.",
         "monograma": "ME",
+    },
+    # --- Encuentros y eventos -------------------------------------------
+    {
+        "slug": "etm",
+        "nombre": "ETM · Emprende tu Mente",
+        "dominio": "emprendetumente.org",
+        "url": "https://www.emprendetumente.org/",
+        "categoria": "encuentro",
+        "tipo": "Corporación sin fines de lucro",
+        "detalle": "EtMday · EtMmeet · EtMtuesday",
+        "descripcion": "Conecta emprendedores con el mundo corporativo y organiza "
+                       "el EtMday, el encuentro de emprendimiento más grande de Latam.",
+        "monograma": "ETM",
+    },
+    {
+        "slug": "innova360",
+        "nombre": "Innova360",
+        "dominio": "innova360.cl",
+        "url": "https://www.innova360.cl/",
+        "categoria": "encuentro",
+        "tipo": "Innovación corporativa",
+        "detalle": "InnovaSummit · NaciónInnova",
+        "descripcion": "Arma los programas de innovación abierta de las grandes "
+                       "empresas y las conecta con startups, fondos y universidades.",
+        "monograma": "i360",
+    },
+    {
+        "slug": "startup-grind-santiago",
+        "nombre": "Startup Grind Santiago",
+        "dominio": "startupgrind.com",
+        "url": "https://www.startupgrind.com/santiago/",
+        "categoria": "encuentro",
+        "tipo": "Comunidad de eventos",
+        "detalle": "Santiago · Mensual",
+        "descripcion": "El capítulo santiaguino de la red global: charlas y "
+                       "encuentros periódicos entre fundadores.",
+        "monograma": "SG",
+    },
+    {
+        "slug": "avonni",
+        "nombre": "Avonni",
+        "dominio": "avonni.cl",
+        "url": "https://avonni.cl/",
+        # su favicon es un isotipo de 32px; este es el logotipo del encabezado
+        "logo_url": "https://avonni.cl/dist/img/logo_new.webp",
+        "categoria": "encuentro",
+        "tipo": "Premio Nacional de Innovación",
+        "detalle": "Anual · Foro Innovación",
+        "descripcion": "El premio que distingue cada año a las innovaciones "
+                       "chilenas, y la ceremonia donde se junta el ecosistema.",
+        "monograma": "AV",
+    },
+    {
+        "slug": "ecommerce-day",
+        "nombre": "eCommerce Day Chile",
+        "dominio": "ecommerceday.cl",
+        "url": "https://ecommerceday.cl/",
+        "categoria": "encuentro",
+        "tipo": "Encuentro sectorial",
+        "detalle": "Comercio digital",
+        "descripcion": "El punto de encuentro anual del comercio digital chileno, "
+                       "con foco en negocios que venden online.",
+        "monograma": "eD",
     },
 ]
 

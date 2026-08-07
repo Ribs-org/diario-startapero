@@ -78,4 +78,5 @@ def seccion_comunidades(request: Request):
     return templates.TemplateResponse(request, "comunidades.html", {
         "universitarias": comunidades.por_categoria("universitaria"),
         "redes": comunidades.por_categoria("red"),
+        "encuentros": comunidades.por_categoria("encuentro"),
     })

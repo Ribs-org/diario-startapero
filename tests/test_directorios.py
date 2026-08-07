@@ -45,6 +45,7 @@ def test_las_categorias_cubren_todas_las_fichas():
             == len(financiamiento.INSTITUCIONES))
     assert (len(comunidades.por_categoria("universitaria"))
             + len(comunidades.por_categoria("red"))
+            + len(comunidades.por_categoria("encuentro"))
             == len(comunidades.COMUNIDADES))
 
 

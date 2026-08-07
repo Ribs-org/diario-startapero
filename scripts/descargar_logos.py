@@ -108,13 +108,35 @@ def lado_menor(contenido):
     return None
 
 
+def extension_por_contenido(contenido):
+    """Reconoce el formato por los bytes, para servidores sin content-type."""
+    if contenido[:8] == b"\x89PNG\r\n\x1a\n":
+        return ".png"
+    if contenido[:4] == b"\x00\x00\x01\x00":
+        return ".ico"
+    if contenido[:2] == b"\xff\xd8":
+        return ".jpg"
+    if contenido[:4] == b"RIFF" and contenido[8:12] == b"WEBP":
+        return ".webp"
+    if contenido[:4] == b"GIF8":
+        return ".gif"
+    if b"<svg" in contenido[:300].lower():
+        return ".svg"
+    return None
+
+
 def descargar(cliente, url, exigir_tamano=True):
     """Devuelve (bytes, extensión) si la respuesta es una imagen útil."""
     r = cliente.get(url)
-    tipo = r.headers.get("content-type", "").split(";")[0].strip()
-    if r.status_code != 200 or tipo not in EXTENSIONES:
+    if r.status_code != 200:
         return None
-    minimo = MINIMO_BYTES_SVG if tipo == "image/svg+xml" else MINIMO_BYTES
+    tipo = r.headers.get("content-type", "").split(";")[0].strip()
+    # Hay servidores que no declaran content-type (o mandan octet-stream);
+    # si los bytes son los de una imagen, vale igual.
+    extension = EXTENSIONES.get(tipo) or extension_por_contenido(r.content)
+    if extension is None:
+        return None
+    minimo = MINIMO_BYTES_SVG if extension == ".svg" else MINIMO_BYTES
     if len(r.content) < minimo:
         return None
     if hashlib.md5(r.content).hexdigest() in FAVICONS_GENERICOS:
@@ -122,7 +144,7 @@ def descargar(cliente, url, exigir_tamano=True):
     lado = lado_menor(r.content)
     if exigir_tamano and lado is not None and lado < MINIMO_LADO:
         return None
-    return r.content, EXTENSIONES[tipo]
+    return r.content, extension
 
 
 def main():

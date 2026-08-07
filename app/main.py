@@ -1,15 +1,15 @@
 """Web de Copper Valley Diario: solo lee de SQLite."""
 import mimetypes
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, Request
-from fastapi.responses import FileResponse
+from fastapi import Depends, FastAPI, Form, Request
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import db
-from app import comunidades, financiamiento
+from app import comunidades, financiamiento, suscripcion
 
 BASE = Path(__file__).parent
 
@@ -87,3 +87,46 @@ def seccion_comunidades(request: Request):
         "redes": comunidades.por_categoria("red"),
         "encuentros": comunidades.por_categoria("encuentro"),
     })
+
+
+MENSAJE_ALTA_OK = ("¡Listo! Anotamos tu correo. Vas a recibir Copper Valley "
+                   "Diario cuando salga la primera edición.")
+
+
+@app.get("/suscribirse")
+def pagina_suscribirse(request: Request):
+    return templates.TemplateResponse(request, "suscribirse.html", {})
+
+
+@app.post("/suscribirse")
+def alta_suscriptor(request: Request, nombre: str = Form(""), email: str = Form(""),
+                    sitio_web: str = Form(""), origen: str = Form("pagina"),
+                    conn=Depends(get_db)):
+    # Honeypot: el campo está oculto, así que solo lo rellena un bot. Le
+    # respondemos éxito para no enseñarle que lo detectamos.
+    if sitio_web.strip():
+        return _respuesta_alta(request, True, MENSAJE_ALTA_OK)
+    try:
+        nombre, email = suscripcion.limpiar(nombre, email)
+    except suscripcion.DatosInvalidos as error:
+        return _respuesta_alta(request, False, str(error), status=422)
+    # Alta idempotente: si el correo ya estaba, respondemos lo mismo. Decir "ya
+    # estás suscrito" le confirmaría a cualquiera quién está en la lista.
+    db.insert_suscriptor(
+        conn,
+        nombre=nombre,
+        email=email,
+        fecha_alta=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        origen=suscripcion.normalizar_origen(origen),
+    )
+    return _respuesta_alta(request, True, MENSAJE_ALTA_OK)
+
+
+def _respuesta_alta(request, ok, mensaje, status=200):
+    """JSON para el modal (fetch), HTML para el formulario sin JavaScript."""
+    if "application/json" in request.headers.get("accept", ""):
+        return JSONResponse({"ok": ok, "mensaje": mensaje}, status_code=status)
+    return templates.TemplateResponse(
+        request, "suscribirse.html", {"ok": ok, "mensaje": mensaje},
+        status_code=status,
+    )

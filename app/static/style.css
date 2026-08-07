@@ -223,3 +223,130 @@ footer {
   margin-top: 2rem;
   padding: 1rem;
 }
+
+/* --- Suscripción al newsletter --- */
+
+nav a.nav-suscribirse {
+  color: var(--marfil);
+  background: var(--cobre);
+  padding: 0.2rem 0.9rem;
+  border-radius: 3px;
+}
+
+nav a.nav-suscribirse:hover { background: var(--cobre-claro); color: var(--marfil); }
+
+.caja-suscripcion {
+  max-width: 30rem;
+  background: #fff;
+  border-top: 3px solid var(--cobre);
+  border-radius: 2px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 29, 45, 0.12);
+}
+
+.form-suscripcion label {
+  display: block;
+  margin-bottom: 0.9rem;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  color: var(--azul-marino);
+  font-size: 0.9rem;
+}
+
+.form-suscripcion input {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--gris-acero);
+  border-radius: 2px;
+  background: var(--marfil);
+  color: var(--azul-pizarra);
+  font-family: inherit;
+  font-size: 1rem;
+  font-variant: normal;
+  letter-spacing: normal;
+}
+
+.form-suscripcion input:focus {
+  outline: 2px solid var(--cobre);
+  outline-offset: 1px;
+}
+
+.form-suscripcion button {
+  width: 100%;
+  padding: 0.55rem 1rem;
+  border: none;
+  border-radius: 2px;
+  background: var(--cobre);
+  color: var(--marfil);
+  font-family: inherit;
+  font-size: 1rem;
+  font-variant: small-caps;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.form-suscripcion button:hover { background: var(--cobre-claro); }
+
+.form-suscripcion button:disabled { background: var(--gris-acero); cursor: wait; }
+
+/* El honeypot: fuera de la vista, pero sin display:none, que algunos bots detectan. */
+.trampa {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.letra-chica {
+  color: var(--gris-acero);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  margin: 0.8rem 0 0;
+}
+
+.aviso {
+  max-width: 30rem;
+  margin: 1rem 0;
+  padding: 0.7rem 0.9rem;
+  border-left: 3px solid var(--cobre);
+  background: #fff;
+  color: var(--azul-marino);
+}
+
+.aviso-error { border-left-color: #B23A2E; }
+
+.dialogo-suscripcion {
+  max-width: 30rem;
+  width: calc(100% - 2rem);
+  border: none;
+  border-top: 3px solid var(--cobre);
+  border-radius: 2px;
+  background: var(--marfil);
+  color: var(--azul-pizarra);
+  font-family: inherit;
+  padding: 1.5rem;
+}
+
+.dialogo-suscripcion::backdrop { background: rgba(15, 29, 45, 0.55); }
+
+.dialogo-suscripcion h2 { margin: 0 0 0.4rem; color: var(--azul-marino); }
+
+.dialogo-suscripcion .bajada { margin-top: 0; font-size: 0.9rem; }
+
+.dialogo-suscripcion .aviso { margin: 0 0 1rem; }
+
+.cerrar-dialogo { float: right; margin: -0.5rem -0.5rem 0 0; }
+
+.cerrar-dialogo button {
+  border: none;
+  background: none;
+  color: var(--gris-acero);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cerrar-dialogo button:hover { color: var(--azul-marino); }

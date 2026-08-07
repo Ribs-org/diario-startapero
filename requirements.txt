@@ -6,3 +6,4 @@ httpx
 trafilatura
 anthropic
 pytest
+python-multipart

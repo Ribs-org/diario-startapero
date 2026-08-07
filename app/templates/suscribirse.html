@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Suscribirse — Copper Valley Diario{% endblock %}
+{% block content %}
+<h1>Recibí Copper Valley Diario</h1>
+<p class="bajada">Las noticias de startups de Chile y del mundo, resumidas y con
+enlace a la fuente original. Dejanos tu nombre y tu correo y quedás en la lista.</p>
+
+{% if mensaje %}
+<p class="aviso {% if not ok %}aviso-error{% endif %}">{{ mensaje }}</p>
+{% endif %}
+
+{% if not ok %}
+<div class="caja-suscripcion">
+  {% include "_form_suscripcion.html" %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block modal_suscripcion %}{% endblock %}

@@ -19,6 +19,16 @@ CREATE TABLE IF NOT EXISTS articles (
 )
 """
 
+SCHEMA_SUSCRIPTORES = """
+CREATE TABLE IF NOT EXISTS suscriptores (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    fecha_alta TEXT NOT NULL,
+    origen TEXT NOT NULL
+)
+"""
+
 
 def get_connection(db_path=None):
     destino = db_path or os.environ.get("DIARIO_DB_PATH")
@@ -29,6 +39,7 @@ def get_connection(db_path=None):
     conn = sqlite3.connect(path)
     conn.row_factory = sqlite3.Row
     conn.execute(SCHEMA)
+    conn.execute(SCHEMA_SUSCRIPTORES)
     conn.commit()
     return conn
 
@@ -39,6 +50,7 @@ def _turso_connection():
         os.environ["TURSO_AUTH_TOKEN"],
     )
     conn.execute(SCHEMA)
+    conn.execute(SCHEMA_SUSCRIPTORES)
     return conn
 
 
@@ -138,6 +150,29 @@ def list_articles(conn, seccion=None, limit=30):
         params.append(seccion)
     query += " ORDER BY fecha_publicacion DESC, id DESC LIMIT ?"
     params.append(limit)
-    cur = conn.execute(query, params)
+    return _filas_como_dicts(conn.execute(query, params))
+
+
+def normalizar_email(email):
+    return email.strip().lower()
+
+
+def insert_suscriptor(conn, *, nombre, email, fecha_alta, origen):
+    """Alta idempotente: un email repetido no duplica ni levanta excepción."""
+    conn.execute(
+        """INSERT OR IGNORE INTO suscriptores (nombre, email, fecha_alta, origen)
+           VALUES (?, ?, ?, ?)""",
+        (nombre.strip(), normalizar_email(email), fecha_alta, origen),
+    )
+    conn.commit()
+
+
+def list_suscriptores(conn):
+    return _filas_como_dicts(
+        conn.execute("SELECT * FROM suscriptores ORDER BY id DESC")
+    )
+
+
+def _filas_como_dicts(cur):
     columnas = [d[0] for d in cur.description]
     return [dict(zip(columnas, fila)) for fila in cur.fetchall()]

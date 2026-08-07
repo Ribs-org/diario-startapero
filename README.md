@@ -11,6 +11,11 @@ datos. Los listados viven en `app/financiamiento.py` y `app/comunidades.py`,
 sus logos en `app/static/logos/` y la ficha que comparten en
 `app/templates/_ficha.html`.
 
+El botón **Suscribirse** de la navegación abre un modal con el formulario del
+newsletter, y la página `/suscribirse` muestra el mismo formulario para
+compartir por enlace. Ambos guardan nombre y correo en la tabla
+`suscriptores`. Por ahora solo se junta la lista: el diario no envía correos.
+
 ## Producción
 
 - **Sitio:** https://diario-startapero.vercel.app (Vercel, lee Turso)
@@ -20,6 +25,9 @@ sus logos en `app/static/logos/` y la ficha que comparten en
   repo (Actions) y environment variables (Vercel).
 - **Despublicar una nota:** en https://app.turso.tech → la BD → SQL console:
   `UPDATE articles SET estado = 'hidden' WHERE url_original = '...';`
+- **Ver los suscriptores del newsletter:** misma SQL console:
+  `SELECT nombre, email, fecha_alta, origen FROM suscriptores ORDER BY id DESC;`
+  (`origen` dice si el alta vino del modal o de la página `/suscribirse`).
 
 ## Desarrollo local
 

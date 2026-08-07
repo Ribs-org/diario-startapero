@@ -19,6 +19,7 @@
       <a href="/mundo">Startups Mundo</a>
       <a href="/financiamiento">Financiamiento</a>
       <a href="/comunidades">Comunidades</a>
+      <a href="/suscribirse" class="nav-suscribirse" id="abrir-suscripcion">Suscribirse</a>
     </nav>
   </header>
   <main>
@@ -30,5 +31,58 @@
     <p>Editado por <a href="https://linktr.ee/vicente.pareja" target="_blank"
       rel="noopener">Vicente Pareja</a></p>
   </footer>
+
+  {# La página /suscribirse ya muestra el formulario: no necesita el modal. #}
+  {% block modal_suscripcion %}
+  <dialog id="dialogo-suscripcion" class="dialogo-suscripcion">
+    <form method="dialog" class="cerrar-dialogo">
+      <button aria-label="Cerrar">&times;</button>
+    </form>
+    <h2>Recibí Copper Valley Diario</h2>
+    <p class="bajada">Las noticias de startups de Chile y del mundo, resumidas
+    y con enlace a la fuente original.</p>
+    <p class="aviso" hidden></p>
+    {% with origen = 'modal' %}{% include "_form_suscripcion.html" %}{% endwith %}
+  </dialog>
+
+  <script>
+    // Sin JavaScript el botón es un enlace común a /suscribirse.
+    (function () {
+      var dialogo = document.getElementById('dialogo-suscripcion');
+      var boton = document.getElementById('abrir-suscripcion');
+      if (!dialogo || !boton || !dialogo.showModal) return;
+
+      boton.addEventListener('click', function (evento) {
+        evento.preventDefault();
+        dialogo.showModal();
+      });
+      dialogo.addEventListener('click', function (evento) {
+        if (evento.target === dialogo) dialogo.close();
+      });
+
+      var formulario = dialogo.querySelector('.form-suscripcion');
+      var aviso = dialogo.querySelector('.aviso');
+      formulario.addEventListener('submit', function (evento) {
+        evento.preventDefault();
+        var enviar = formulario.querySelector('button');
+        enviar.disabled = true;
+        fetch('/suscribirse', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(formulario)
+        }).then(function (r) { return r.json(); }).then(function (datos) {
+          aviso.textContent = datos.mensaje;
+          aviso.classList.toggle('aviso-error', !datos.ok);
+          aviso.hidden = false;
+          if (datos.ok) formulario.hidden = true;
+        }).catch(function () {
+          aviso.textContent = 'No pudimos guardar tu correo. Probá de nuevo en un rato.';
+          aviso.classList.add('aviso-error');
+          aviso.hidden = false;
+        }).finally(function () { enviar.disabled = false; });
+      });
+    })();
+  </script>
+  {% endblock %}
 </body>
 </html>

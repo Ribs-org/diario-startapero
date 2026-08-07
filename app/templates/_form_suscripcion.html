@@ -1,0 +1,18 @@
+<form class="form-suscripcion" method="post" action="/suscribirse">
+  <input type="hidden" name="origen" value="{{ origen|default('pagina') }}">
+  <label>Nombre
+    <input type="text" name="nombre" maxlength="80" required autocomplete="name">
+  </label>
+  <label>Email
+    <input type="email" name="email" maxlength="254" required autocomplete="email">
+  </label>
+  {# Trampa para bots: oculta por CSS, un lector nunca la ve ni la tabula. #}
+  <p class="trampa" aria-hidden="true">
+    <label>Dejá este campo vacío
+      <input type="text" name="sitio_web" tabindex="-1" autocomplete="off">
+    </label>
+  </p>
+  <button type="submit">Suscribirme</button>
+  <p class="letra-chica">Guardamos tu nombre y tu correo solo para enviarte el
+  diario. Nada más, y a nadie más.</p>
+</form>

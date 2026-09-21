@@ -130,5 +130,4 @@ aceptados).
 
 1. Desarrollo y primera operación en local: `uvicorn` + scraper a mano /
    Programador de tareas.
-2. Deploy final (tras validar en local): Railway o Render (~US$5-10/mes) con
-   cron diario.
+2. Deploy final (tras validar en local): Vercel
